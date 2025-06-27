@@ -1,0 +1,20 @@
+appId: "io.github.gabriel-bernardes-ribeiro.b4api"
+productName: "B4Api"
+copyright: "Copyright (c) 2025 Gabriel Bernardes Ribeiro"
+win:
+  target: ["dir", "portable", "zip", "nsis"]
+  icon: "resources/icon.ico"
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+
+linux:
+  target: ["dir", "appimage", "zip"]
+  icon: "resources/icon.png"
+
+mac:
+  target: ["dir", "dmg", "zip"]
+  icon: "resources/icon.icns"
