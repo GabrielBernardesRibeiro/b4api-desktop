@@ -1,0 +1,63 @@
+name: Release via Tag
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Set version from tag
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          yarn version --new-version $VERSION --no-git-tag-version
+
+      - name: Run build script
+        run: yarn build
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Generate checksums for installers and zips
+        run: |
+          sha256sum dist/*.exe dist/*.zip > dist/checksums.txt
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*.exe
+            dist/*.zip
+            dist/noinstall.zip
+            dist/checksums.txt
+            dist/source.zip
+            dist/source.code.tar.gz
+            dist/*.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

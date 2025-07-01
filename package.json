@@ -8,9 +8,12 @@
     "url": "https://bernardes.dev.br"
   },
   "description": "This is a clone of postman, insomnia and others api clients",
-  "main": "main/main.js",
+  "main": "electron-dist/main.js",
   "scripts": {
-    "dev": "concurrently -n \"NEXT, ELECTRON\" -c \"yellow, blue\" --kill-others \"next dev --experimental-https --turbopack\" \"electron .\"",
+    "tsc:build": "tsc -p ./tsconfig.electron.json",
+    "dev": "concurrently -n \"NEXT, ELECTRON\" -c \"yellow, blue\" --kill-others \"yarn dev:next\" \"yarn dev:electron\"",
+    "dev:next": "next dev --experimental-https --turbopack",
+    "dev:electron": "tsc-watch --project tsconfig.electron.json --onSuccess \"electron .\"",
     "build": "yarn build:next-export && node ./scripts/fix-paths.js && electron-builder",
     "build:next-standalone": "cross-env NEXT_ENV_OUTPUT_TYPE=standalone next build",
     "build:next-export": "cross-env NEXT_ENV_OUTPUT_TYPE=export next build",
@@ -21,6 +24,7 @@
   },
   "dependencies": {
     "electron-serve": "^2.1.1",
+    "electron-updater": "^6.6.2",
     "next": "15.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -38,6 +42,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "tailwindcss": "^4",
+    "tsc-watch": "^7.1.1",
     "typescript": "^5"
   }
 }
