@@ -14,10 +14,10 @@
     "dev": "concurrently -n \"NEXT, ELECTRON\" -c \"yellow, blue\" --kill-others \"yarn dev:next\" \"yarn dev:electron\"",
     "dev:next": "next dev --experimental-https --turbopack",
     "dev:electron": "tsc-watch --project tsconfig.electron.json --onSuccess \"electron .\"",
-    "build": "yarn build:next-export && node ./scripts/fix-paths.js && electron-builder",
+    "build": "yarn build:next-export && yarn fix-paths && yarn build:electron",
     "build:next-standalone": "cross-env NEXT_ENV_OUTPUT_TYPE=standalone next build",
     "build:next-export": "cross-env NEXT_ENV_OUTPUT_TYPE=export next build",
-    "build:electron": "node ./scripts/fix-paths.js && electron-builder",
+    "build:electron": "yarn tsc:build && electron-builder",
     "fix-paths": "node ./scripts/fix-paths.js",
     "start": "next start",
     "lint": "next lint"

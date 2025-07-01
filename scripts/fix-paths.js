@@ -24,7 +24,7 @@ fs.readFile(indexPath, "utf8", (err, data) => {
       console.error("Erro ao escrever index.html:", err);
       process.exit(1);
     } else {
-      console.log("Caminhos corrigidos com sucesso.");
+      console.log("Caminhos corrigidos com sucesso.\n");
     }
   });
 });
