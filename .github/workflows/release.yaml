@@ -1,63 +1,66 @@
-name: Release via Tag
+name: 🚀 Build & Release Electron App
 
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "v*"
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      NODE_ENV: production
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      VERSION: ${{ github.ref_name }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: 🧰 Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: 20
+          cache: yarn
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Set version from tag
-        run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          yarn version --new-version $VERSION --no-git-tag-version
-
-      - name: Run build script
+      - name: 🛠️ Build (Next.js + Electron)
         run: yarn build
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Generate checksums for installers and zips
+      - name: 📂 List build outputs
+        run: ls -R dist
+
+      - name: 🔐 Generate checksums
+        shell: bash
         run: |
-          sha256sum dist/*.exe dist/*.zip > dist/checksums.txt
+          mkdir -p dist
+          find dist -type f \( -iname "*.exe" -o -iname "*.zip" -o -iname "*.AppImage" -o -iname "*.dmg" \) \
+            -exec sha256sum "{}" \; > dist/checksums.txt
+          cat dist/checksums.txt
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload release assets
+      - name: 🚢 Upload release to GitHub
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ${{ env.VERSION }}
+          name: 📦 Release ${{ env.VERSION }}
+          body: |
+            🔄 Automatic release for `${{ env.VERSION }}`
+
+            - OS: ${{ matrix.os }}
+            - Built from: ${{ github.repository }}
+            - Triggered by: ${{ github.actor }}
           files: |
-            dist/*.exe
-            dist/*.zip
-            dist/noinstall.zip
+            dist/**/*.exe
+            dist/**/*.zip
+            dist/**/*.AppImage
+            dist/**/*.dmg
             dist/checksums.txt
-            dist/source.zip
-            dist/source.code.tar.gz
-            dist/*.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
