@@ -18,3 +18,9 @@ linux:
 mac:
   target: ["dir", "dmg", "zip"]
   icon: "resources/icon.icns"
+
+publish:
+  provider: github
+  owner: GabrielBernardesRibeiro
+  repo: b4api-desktop
+  releaseType: release

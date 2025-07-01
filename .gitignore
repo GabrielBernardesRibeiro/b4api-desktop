@@ -44,3 +44,4 @@ certificates
 
 # build
 /dist/
+/electron-dist/
