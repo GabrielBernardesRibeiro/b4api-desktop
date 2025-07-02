@@ -104,6 +104,6 @@ jobs:
           files: |
             dist/**/*.exe
             dist/**/*.zip
-            dist/**/*checksums.txt
+            dist/**/*.checksum.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
