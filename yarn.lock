@@ -1819,6 +1819,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"b4api-desktop@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "b4api-desktop@workspace:."
+  dependencies:
+    "@eslint/eslintrc": ^3
+    "@tailwindcss/postcss": ^4
+    "@types/node": ^20
+    "@types/react": ^19
+    "@types/react-dom": ^19
+    concurrently: ^9.2.0
+    cross-env: ^7.0.3
+    electron: ^37.1.0
+    electron-builder: ^26.0.12
+    electron-serve: ^2.1.1
+    electron-updater: ^6.6.2
+    eslint: ^9
+    eslint-config-next: 15.3.4
+    next: 15.3.4
+    react: ^19.0.0
+    react-dom: ^19.0.0
+    tailwindcss: ^4
+    tsc-watch: ^7.1.1
+    typescript: ^5
+  languageName: unknown
+  linkType: soft
+
 "balanced-match@npm:^1.0.0":
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
@@ -3334,32 +3360,6 @@ __metadata:
   checksum: b85125b7890489656eb2e4f208f7654a93ec26e3aefaf3bbbcc0d496fc1941e4405834fcc9fe7333192aa2187905510ace70417bbf9ac6f6f4784a731d986939
   languageName: node
   linkType: hard
-
-"frontend@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "frontend@workspace:."
-  dependencies:
-    "@eslint/eslintrc": ^3
-    "@tailwindcss/postcss": ^4
-    "@types/node": ^20
-    "@types/react": ^19
-    "@types/react-dom": ^19
-    concurrently: ^9.2.0
-    cross-env: ^7.0.3
-    electron: ^37.1.0
-    electron-builder: ^26.0.12
-    electron-serve: ^2.1.1
-    electron-updater: ^6.6.2
-    eslint: ^9
-    eslint-config-next: 15.3.4
-    next: 15.3.4
-    react: ^19.0.0
-    react-dom: ^19.0.0
-    tailwindcss: ^4
-    tsc-watch: ^7.1.1
-    typescript: ^5
-  languageName: unknown
-  linkType: soft
 
 "fs-extra@npm:^10.0.0, fs-extra@npm:^10.1.0":
   version: 10.1.0
