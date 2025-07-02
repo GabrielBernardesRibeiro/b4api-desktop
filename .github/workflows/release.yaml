@@ -40,6 +40,8 @@ jobs:
 
       - name: 🛠️ Build (Next.js + Electron)
         run: yarn build
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: 📂 List build outputs
         run: ls -R dist
