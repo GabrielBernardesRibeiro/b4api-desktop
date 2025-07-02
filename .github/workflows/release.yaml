@@ -4,7 +4,6 @@ on:
   push:
     tags:
       - "v*"
-  workflow_dispatch:
 
 jobs:
   build:
@@ -27,19 +26,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
+          cache: yarn
 
       - name: 📦 Install dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
 
       - name: 🔍 Ensure cross-env is available
-        run: npm i cross-env --dev
+        run: yarn add cross-env --dev
 
       - name: 🔍 Ensure tailwind @tailwindcss/postcss and postcss is available
-        run: npm i tailwindcss @tailwindcss/postcss postcss --dev
+        run: yarn add tailwindcss @tailwindcss/postcss postcss --dev
 
       - name: 🛠️ Build (Next.js + Electron)
-        run: npm run build
+        run: yarn build
 
       - name: 📂 List build outputs
         run: ls -R dist
@@ -48,9 +47,9 @@ jobs:
         shell: bash
         run: |
           mkdir -p dist
-          find dist -type f \( -iname "*.exe" -o -iname "*.zip" -o -iname "*.AppImage" -o -iname "*.dmg" \) \
-            -exec sha256sum "{}" \; > dist/checksums.txt
-          cat dist/checksums.txt
+          find dist -type f -iname "*.zip" | while read -r file; do
+            sha256sum "$file" | awk '{print $1}' > "$file.checksum.txt"
+          done
 
       - name: 🚢 Upload release to GitHub
         uses: softprops/action-gh-release@v1
