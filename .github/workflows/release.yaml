@@ -66,8 +66,6 @@ jobs:
           files: |
             dist/**/*.exe
             dist/**/*.zip
-            dist/**/*.AppImage
-            dist/**/*.dmg
-            dist/checksums.txt
+            dist/**/*checksums.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
