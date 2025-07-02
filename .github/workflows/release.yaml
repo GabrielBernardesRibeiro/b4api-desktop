@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
 
 jobs:
   build:
@@ -29,7 +30,7 @@ jobs:
           cache: yarn
 
       - name: 📦 Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: 🔍 Ensure cross-env is available
         run: yarn add cross-env --dev
