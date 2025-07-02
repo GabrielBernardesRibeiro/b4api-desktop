@@ -49,10 +49,11 @@ ipcMain.handle("check-for-updates", async () => {
       const currentVersion = autoUpdater.currentVersion.version;
 
       const isUpdateAvailable = updateInfo.version !== currentVersion;
-      
+
       return {
         available: isUpdateAvailable,
         version: updateInfo.version,
+        currentVersion, // << ADICIONADO AQUI
         notes:
           typeof updateInfo.releaseNotes === "string"
             ? updateInfo.releaseNotes
@@ -65,6 +66,7 @@ ipcMain.handle("check-for-updates", async () => {
     return {
       available: false,
       version: "undefined",
+      currentVersion: autoUpdater.currentVersion.version,
       notes: "result of checkForUpdates is null",
     };
   } catch (error) {
@@ -72,6 +74,7 @@ ipcMain.handle("check-for-updates", async () => {
     return {
       available: false,
       version: autoUpdater.currentVersion.version,
+      currentVersion: autoUpdater.currentVersion.version,
       notes: "",
     };
   }

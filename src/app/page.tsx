@@ -6,18 +6,22 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [isUpdated, setIsUpdated] = useState<boolean>(true);
   const [appVersion, setAppVersion] = useState<string>("");
+  const [latestVersion, setLatestVersion] = useState<string | null>(null);
 
   const checkForUpdate = async () => {
     if (typeof window !== "undefined" && "electronAPI" in window) {
       const res = await window.electronAPI.invoke<{
         available: boolean;
         version: string;
+        currentVersion: string;
       }>("check-for-updates");
-      if (res.available) {
-        setIsUpdated(!res.available);
-      }
 
-      setAppVersion(res.version);
+      setAppVersion(res.currentVersion);
+      setIsUpdated(!res.available);
+
+      if (res.available) {
+        setLatestVersion(res.version);
+      }
     }
   };
 
@@ -45,7 +49,15 @@ export default function Home() {
         >
           B4API - new update
         </a>
-        {appVersion.length > 0 && <p className="text-white">{appVersion}</p>}
+
+        {latestVersion && latestVersion !== appVersion ? (
+          <p className="text-white">
+            <s>{appVersion}</s> → {latestVersion}
+          </p>
+        ) : (
+          appVersion && <p className="text-white">{appVersion}</p>
+        )}
+
         {!isUpdated && (
           <button
             onClick={startUpdate}
