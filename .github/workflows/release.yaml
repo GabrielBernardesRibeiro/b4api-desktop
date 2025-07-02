@@ -34,6 +34,9 @@ jobs:
       - name: 🔍 Ensure cross-env is available
         run: yarn add cross-env --dev
 
+      - name: 🔍 Ensure tailwind @tailwindcss/postcss and postcss is available
+        run: yarn add tailwindcss @tailwindcss/postcss postcss --dev
+
       - name: 🛠️ Build (Next.js + Electron)
         run: yarn build
 
