@@ -22,7 +22,8 @@
       "@/*": ["./src/*"]
     },
     "outDir": "electron-dist",
-    "rootDir": "main"
+    "rootDir": "main",
+    "tsBuildInfoFile": "electron-dist/.tsbuildinfo"
   },
   "include": ["main/**/*"],
   "exclude": ["node_modules"]
