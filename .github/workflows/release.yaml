@@ -46,13 +46,49 @@ jobs:
       - name: 📂 List build outputs
         run: ls -R dist
 
-      - name: 🔐 Generate checksums
-        shell: bash
+      - name: 🔐 Generate checksums and create Setup zip
+        shell: pwsh
         run: |
-          mkdir -p dist
-          find dist -type f -iname "*.zip" | while read -r file; do
-            sha256sum "$file" | awk '{print $1}' > "$file.checksum.txt"
-          done
+          Write-Host "🔄 Iniciando processo de checksum e criação de zip..."
+
+          # Garantir que a pasta dist exista
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+
+          # 1. Encontrar e gerar checksum do arquivo *-win.zip
+          Write-Host "`n📦 Procurando arquivo '*-win.zip'..."
+          $zipFile = Get-ChildItem -Path dist -Filter "*-win.zip" | Select-Object -First 1
+          if ($zipFile) {
+            Write-Host "✅ Arquivo encontrado: $($zipFile.Name)"
+            Write-Host "🔐 Gerando checksum SHA256 para '$($zipFile.Name)'..."
+            $checksum = Get-FileHash -Path $zipFile.FullName -Algorithm SHA256
+            Set-Content -Path "$($zipFile.FullName).checksum.txt" -Value $checksum.Hash
+            Write-Host "✅ Checksum gerado: $($checksum.Hash)"
+            Write-Host "📄 Arquivo de saída: $($zipFile.Name).checksum.txt"
+          } else {
+            Write-Host "⚠️ Nenhum arquivo '*-win.zip' encontrado!"
+          }
+
+          # 2. Encontrar o arquivo setup .exe e zipá-lo
+          Write-Host "`n📦 Procurando arquivo 'B4Api Setup *.exe'..."
+          $setupExe = Get-ChildItem -Path dist -Filter "B4Api Setup *.exe" | Select-Object -First 1
+          if ($setupExe) {
+            Write-Host "✅ Arquivo encontrado: $($setupExe.Name)"
+            $setupZip = Join-Path $setupExe.Directory.FullName "B4Api Setup.zip"
+            Write-Host "🗜️ Criando arquivo zip: 'B4Api Setup.zip' com $($setupExe.Name)..."
+            Compress-Archive -Path $setupExe.FullName -DestinationPath $setupZip -Force
+            Write-Host "✅ Zip criado: B4Api Setup.zip"
+
+            # 3. Gerar checksum do novo zip
+            Write-Host "🔐 Gerando checksum SHA256 para 'B4Api Setup.zip'..."
+            $setupChecksum = Get-FileHash -Path $setupZip -Algorithm SHA256
+            Set-Content -Path "$setupZip.checksum.txt" -Value $setupChecksum.Hash
+            Write-Host "✅ Checksum gerado: $($setupChecksum.Hash)"
+            Write-Host "📄 Arquivo de saída: B4Api Setup.zip.checksum.txt"
+          } else {
+            Write-Host "⚠️ Nenhum arquivo 'B4Api Setup *.exe' encontrado!"
+          }
+
+          Write-Host "`n✅ Processo finalizado com sucesso."
 
       - name: 🚢 Upload release to GitHub
         uses: softprops/action-gh-release@v1
