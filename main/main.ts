@@ -41,13 +41,40 @@ app.on("window-all-closed", () => {
 });
 
 ipcMain.handle("check-for-updates", async () => {
-  const updateInfo = {
-    available: true,
-    version: "1.0.0",
-    notes: "This is a fake update",
-  };
+  try {
+    const result = await autoUpdater.checkForUpdates();
 
-  return updateInfo;
+    if (result) {
+      const updateInfo = result.updateInfo;
+      const currentVersion = autoUpdater.currentVersion.version;
+
+      const isUpdateAvailable = updateInfo.version !== currentVersion;
+      
+      return {
+        available: isUpdateAvailable,
+        version: updateInfo.version,
+        notes:
+          typeof updateInfo.releaseNotes === "string"
+            ? updateInfo.releaseNotes
+            : Array.isArray(updateInfo.releaseNotes)
+            ? updateInfo.releaseNotes.map((note) => note.note).join("\n")
+            : "No release notes.",
+      };
+    }
+
+    return {
+      available: false,
+      version: "undefined",
+      notes: "result of checkForUpdates is null",
+    };
+  } catch (error) {
+    console.error("Erro ao verificar atualizações:", error);
+    return {
+      available: false,
+      version: autoUpdater.currentVersion.version,
+      notes: "",
+    };
+  }
 });
 
 ipcMain.on("start-update", async () => {
