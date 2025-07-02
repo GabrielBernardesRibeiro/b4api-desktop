@@ -27,19 +27,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: yarn
+          cache: npm
 
       - name: 📦 Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: 🔍 Ensure cross-env is available
-        run: yarn add cross-env --dev
-
-      - name: 🔍 Ensure tailwind @tailwindcss/postcss and postcss is available
-        run: yarn add tailwindcss @tailwindcss/postcss postcss --dev
+        run: npm ci
 
       - name: 🛠️ Build (Next.js + Electron)
-        run: yarn build
+        run: npm run build
 
       - name: 📂 List build outputs
         run: ls -R dist
