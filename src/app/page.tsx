@@ -43,7 +43,7 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          B4API
+          B4API - new update
         </a>
         {appVersion.length > 0 && <p className="text-white">{appVersion}</p>}
         {!isUpdated && (
