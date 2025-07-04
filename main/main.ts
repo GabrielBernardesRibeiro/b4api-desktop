@@ -79,20 +79,37 @@ ipcMain.handle("check-for-updates", async () => {
     };
   }
 });
-
-ipcMain.on("start-update", async () => {
-  await autoUpdater.checkForUpdates();
+// Iniciar o download da atualização
+ipcMain.on("start-update", () => {
+  try {
+    console.log("Iniciando download da atualização...");
+    autoUpdater.downloadUpdate();
+  } catch (error) {
+    console.error("Erro ao iniciar atualização:", error);
+    mainWindow?.webContents.send("update-error", error.message);
+  }
 });
 
+// Evento chamado quando a atualização está disponível
 autoUpdater.on("update-available", () => {
-  autoUpdater.downloadUpdate();
+  console.log("Atualização disponível, baixando...");
+  // autoUpdater.downloadUpdate(); ← já é feito em "start-update", evite duplicar
 });
 
+// Evento chamado quando o download é concluído
 autoUpdater.on("update-downloaded", () => {
+  console.log("Atualização baixada.");
   mainWindow?.webContents.send("update-downloaded");
 });
 
+// Evento chamado se houver erro
+autoUpdater.on("error", (error) => {
+  console.error("Erro durante atualização:", error);
+  mainWindow?.webContents.send("update-error", error.message);
+});
+
+// Instalar a atualização
 ipcMain.on("install-update", () => {
   console.log("Instalando atualização...");
-  autoUpdater.quitAndInstall();
+  autoUpdater.quitAndInstall(); // Isso reinicia o app automaticamente
 });
