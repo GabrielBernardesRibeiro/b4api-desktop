@@ -4,9 +4,11 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [isUpdated, setIsUpdated] = useState<boolean>(true);
-  const [appVersion, setAppVersion] = useState<string>("");
+  const [isUpdated, setIsUpdated] = useState(true);
+  const [appVersion, setAppVersion] = useState("");
   const [latestVersion, setLatestVersion] = useState<string | null>(null);
+  const [updateReady, setUpdateReady] = useState(false);
+  const [updateError, setUpdateError] = useState<string | null>(null);
 
   const checkForUpdate = async () => {
     if (typeof window !== "undefined" && "electronAPI" in window) {
@@ -27,12 +29,32 @@ export default function Home() {
 
   const startUpdate = () => {
     if (typeof window !== "undefined" && "electronAPI" in window) {
+      setUpdateError(null);
+      setUpdateReady(false);
       window.electronAPI.send("start-update", {});
+    }
+  };
+
+  const installUpdate = () => {
+    if (typeof window !== "undefined" && "electronAPI" in window) {
+      window.electronAPI.send("install-update", {});
     }
   };
 
   useEffect(() => {
     checkForUpdate();
+
+    if (typeof window !== "undefined" && "electronAPI" in window) {
+      // Atualização foi baixada
+      window.electronAPI.on("update-downloaded", () => {
+        setUpdateReady(true);
+      });
+
+      // Erro durante atualização
+      window.electronAPI.on("update-error", (_event: any, message: string) => {
+        setUpdateError(message || "Erro desconhecido.");
+      });
+    }
   }, []);
 
   return (
@@ -40,37 +62,47 @@ export default function Home() {
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         <Image src={"/logo.svg"} width={400} height={400} alt="logo" />
       </main>
-      <footer className="row-start-3 flex flex-col gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4 text-white"
-          href=""
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          B4API - new update
-        </a>
+
+      <footer className="row-start-3 flex flex-col gap-[24px] items-center justify-center text-black">
+        <p className="text-gray-700 font-medium">B4API - new update</p>
 
         {latestVersion && latestVersion !== appVersion ? (
-          <p className="text-black">
+          <p>
             <s>{appVersion}</s> → {latestVersion}
           </p>
         ) : (
-          appVersion && <p className="text-black">{appVersion}</p>
+          appVersion && <p>Versão: {appVersion}</p>
         )}
 
-        {!isUpdated && (
+        {!isUpdated && !updateReady && !updateError && (
           <button
             onClick={startUpdate}
-            className="text-black bg-emerald-700 px-4 py-2 rounded-md cursor-pointer"
+            className="bg-emerald-700 text-white px-4 py-2 rounded-md"
           >
             Atualize seu aplicativo
           </button>
         )}
 
+        {updateReady && (
+          <button
+            onClick={installUpdate}
+            className="bg-blue-700 text-white px-4 py-2 rounded-md"
+          >
+            Reiniciar para atualizar
+          </button>
+        )}
+
         {isUpdated && (
-          <button className="text-black bg-emerald-700 px-4 py-2 rounded-md cursor-pointer">
+          <button
+            disabled
+            className="bg-gray-400 text-white px-4 py-2 rounded-md"
+          >
             Aplicativo atualizado
           </button>
+        )}
+
+        {updateError && (
+          <p className="text-red-600 text-sm">Erro: {updateError}</p>
         )}
       </footer>
     </div>
