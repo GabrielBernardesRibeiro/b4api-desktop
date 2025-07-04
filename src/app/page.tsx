@@ -61,12 +61,12 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="bg-black grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] ">
+    <div className="bg-white grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] ">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         <Image src={"/logo.svg"} width={400} height={400} alt="logo" />
       </main>
 
-      <footer className="row-start-3 flex flex-col gap-[24px] items-center justify-center text-white">
+      <footer className="row-start-3 flex flex-col gap-[24px] items-center justify-center text-black">
         <p className="text-gray-700 font-medium">B4API - new update</p>
 
         {latestVersion && latestVersion !== appVersion ? (
