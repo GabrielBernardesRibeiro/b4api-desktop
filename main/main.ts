@@ -58,7 +58,7 @@ ipcMain.handle("check-for-updates", async () => {
           typeof updateInfo.releaseNotes === "string"
             ? updateInfo.releaseNotes
             : Array.isArray(updateInfo.releaseNotes)
-            ? updateInfo.releaseNotes.map((note) => note.note).join("\n")
+            ? updateInfo.releaseNotes.map((note: any) => note.note).join("\n")
             : "No release notes.",
       };
     }
@@ -84,7 +84,7 @@ ipcMain.on("start-update", () => {
   try {
     console.log("Iniciando download da atualização...");
     autoUpdater.downloadUpdate();
-  } catch (error) {
+  } catch (error: any) {
     console.error("Erro ao iniciar atualização:", error);
     mainWindow?.webContents.send("update-error", error.message);
   }
@@ -103,7 +103,7 @@ autoUpdater.on("update-downloaded", () => {
 });
 
 // Evento chamado se houver erro
-autoUpdater.on("error", (error) => {
+autoUpdater.on("error", (error: any) => {
   console.error("Erro durante atualização:", error);
   mainWindow?.webContents.send("update-error", error.message);
 });
