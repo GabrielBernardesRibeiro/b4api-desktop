@@ -51,9 +51,12 @@ export default function Home() {
       });
 
       // Erro durante atualização
-      window.electronAPI.on("update-error", (_event: any, message: string) => {
-        setUpdateError(message || "Erro desconhecido.");
-      });
+      window.electronAPI.on(
+        "update-error",
+        (_event: string, message: string) => {
+          setUpdateError(message || "Erro desconhecido.");
+        }
+      );
     }
   }, []);
 
