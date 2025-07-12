@@ -3,24 +3,24 @@ productName: "B4Api"
 copyright: "Copyright (c) 2025 Gabriel Bernardes Ribeiro"
 win:
   target: ["dir", "portable", "zip", "nsis"]
-  icon: "resources/icon.ico"
+  icon: "public/logos/logo-win.png"
 
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: true
   createStartMenuShortcut: true
+  artifactName: "b4api-setup.${ext}"
 
 linux:
   target: ["dir", "appimage", "zip"]
-  icon: "resources/icon.png"
+  icon: "public/logos/logo-win.png"
 
 mac:
   target: ["dir", "dmg", "zip"]
-  icon: "resources/icon.icns"
-
-publish:
-  provider: github
-  owner: GabrielBernardesRibeiro
-  repo: b4api-desktop
-  releaseType: release
+  icon: "public/logos/logo-win.png"
+# publish:
+#   provider: github
+#   owner: GabrielBernardesRibeiro
+#   repo: b4api-desktop
+#   releaseType: release
